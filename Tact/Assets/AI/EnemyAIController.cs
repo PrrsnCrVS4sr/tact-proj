@@ -5,8 +5,8 @@ using Pathfinding;
 
 public class EnemyAIController : MonoBehaviour
 {
-    
-    [SerializeField]Transform playerTarget;
+
+    [SerializeField] Transform playerTarget;
 
     [SerializeField] float attackRadius = 10f;
 
@@ -14,17 +14,18 @@ public class EnemyAIController : MonoBehaviour
     float halfFOV = 45.0f;
     float angleRotated;
     bool insideFOV;
-
+    bool canSeePlayer;
     bool hasBeenDetectedOnce;
 
     Vector3 dir;
     Vector3 playersLastSeenPostion;
     [SerializeField] float detectionRadius = 20f;
     Patrol patrolScript;
-    
+
     Rigidbody2D enemyRB;
     AIDestinationSetter destinationSetter;
-    private void Awake() {
+    private void Awake()
+    {
         playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         patrolScript = GetComponent<Patrol>();
         destinationSetter = GetComponent<AIDestinationSetter>();
@@ -40,7 +41,7 @@ public class EnemyAIController : MonoBehaviour
         float distanceFromPlayer = Vector2.Distance(playerTarget.position, transform.position);
         dir = (playerTarget.position - transform.position).normalized;
 
-        
+
         rawAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         float angleAdjusted = rawAngle - 90f;
 
@@ -52,37 +53,37 @@ public class EnemyAIController : MonoBehaviour
         CanSeePlayer();
         destinationSetter.PlayersLastSeePositiion(playersLastSeenPostion);
         // Debug.DrawLine(transform.position, playersLastSeenPostion, Color.red, 1);
-        // Debug.Log(insideFOV);
-        Debug.Log(hasBeenDetectedOnce);
-        if ((distanceFromPlayer > detectionRadius || !insideFOV) && !hasBeenDetectedOnce)
+        // // Debug.Log(insideFOV);
+        // Debug.Log(hasBeenDetectedOnce);
+        if ((distanceFromPlayer > detectionRadius || !canSeePlayer) && !hasBeenDetectedOnce)
         {
             // Debug.Log("1");
             patrolScript.enabled = true;
             destinationSetter.enabled = false;
 
         }
-        else if (distanceFromPlayer < detectionRadius && distanceFromPlayer >= attackRadius && (insideFOV || hasBeenDetectedOnce))
+        else if (distanceFromPlayer < detectionRadius && distanceFromPlayer >= attackRadius && (canSeePlayer || hasBeenDetectedOnce))
         {
             // Debug.Log("2");
             patrolScript.enabled = false;
             destinationSetter.enabled = true;
-            
+
             destinationSetter.Stop(false);
             CanSeePlayer();
-            
-            if(!insideFOV && (Vector3.Magnitude(transform.position -playersLastSeenPostion)<1f))
-            {   
+
+            if (!canSeePlayer && (Vector3.Magnitude(transform.position - playersLastSeenPostion) < 1f))
+            {
                 // Debug.Log("inside");
                 hasBeenDetectedOnce = false;
             }
 
         }
-        else if (distanceFromPlayer < attackRadius && (insideFOV))
+        else if (distanceFromPlayer < attackRadius && (canSeePlayer))
         {
             // Debug.Log("3");
             patrolScript.enabled = false;
             destinationSetter.enabled = true;
-            
+
             destinationSetter.Stop(true);
 
 
@@ -90,12 +91,12 @@ public class EnemyAIController : MonoBehaviour
 
         }
         else
-        {   
+        {
             Debug.Log("4");
             patrolScript.enabled = false;
             destinationSetter.enabled = true;
             destinationSetter.Stop(false);
-            
+
 
         }
 
@@ -104,65 +105,68 @@ public class EnemyAIController : MonoBehaviour
 
     private void CanSeePlayer()
     {
+        CheckIfInFOV();
         RaycastHit2D hit = Physics2D.Raycast(transform.position, dir);
-        
-        if (hit.collider != null)
+        if (insideFOV)
         {
-            
-            if (hit.transform.tag == "Player")
+            if (hit.collider != null)
             {
-                
-                playersLastSeenPostion = hit.transform.position;
-                CheckIfInFOV();
 
+                if (hit.transform.tag == "Player")
+                {
+
+                    playersLastSeenPostion = hit.transform.position;
+                    canSeePlayer = true;
+                    hasBeenDetectedOnce = true;
+
+                }
+                else
+                {
+                    canSeePlayer = false;
+                }
 
             }
-            else
-            {
-                insideFOV = false;
-            }
-
         }
     }
 
     void CheckIfInFOV()
     {
-        
-        float angleBetween ;
+
+        float angleBetween;
         GetReadableValuesOfRotatedAngle();
         angleBetween = (rawAngle - angleRotated);
-        if(-halfFOV<=angleBetween&& angleBetween<=halfFOV)
+        if (-halfFOV <= angleBetween && angleBetween <= halfFOV)
         {
             insideFOV = true;
-            hasBeenDetectedOnce = true;
+            
         }
         else
         {
             insideFOV = false;
         }
 
-       
+
 
     }
 
     void GetReadableValuesOfRotatedAngle()
-    {   
+    {
 
-        
-        if(0<=angleRotated && angleRotated<270)
+
+        if (0 <= angleRotated && angleRotated < 270)
         {
             angleRotated = angleRotated + 90;
         }
-        else if(270<=angleRotated&& angleRotated <360)
+        else if (270 <= angleRotated && angleRotated < 360)
         {
-            angleRotated=angleRotated - 270;
+            angleRotated = angleRotated - 270;
         }
 
-        if( -180 <rawAngle && rawAngle <0)
+        if (-180 < rawAngle && rawAngle < 0)
         {
-            rawAngle = rawAngle+ 360;
+            rawAngle = rawAngle + 360;
         }
-        
+
     }
 
 
