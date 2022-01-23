@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using System;
 
 public class EnemyAIController : MonoBehaviour
 {
@@ -24,12 +25,21 @@ public class EnemyAIController : MonoBehaviour
 
     Rigidbody2D enemyRB;
     AIDestinationSetter destinationSetter;
+
+    EnemyAttack shootPoint;
+    float lastFired = 0;
+    float fireRate = 3;
+
+    
     private void Awake()
     {
         playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         patrolScript = GetComponent<Patrol>();
         destinationSetter = GetComponent<AIDestinationSetter>();
         enemyRB = GetComponent<Rigidbody2D>();
+        shootPoint = GetComponentInChildren<EnemyAttack>();
+
+
         patrolScript.enabled = false;
         destinationSetter.enabled = false;
         destinationSetter.target = playerTarget;
@@ -89,6 +99,14 @@ public class EnemyAIController : MonoBehaviour
 
             transform.rotation = Quaternion.AngleAxis(angleAdjusted, Vector3.forward);
 
+            if(Time.time - lastFired> 1/fireRate )
+            {
+                lastFired = Time.time;
+                AttackPlayer();
+            }
+
+            
+
         }
         else
         {
@@ -96,11 +114,22 @@ public class EnemyAIController : MonoBehaviour
             patrolScript.enabled = false;
             destinationSetter.enabled = true;
             destinationSetter.Stop(false);
+            CanSeePlayer();
 
+            if (!canSeePlayer && (Vector3.Magnitude(transform.position - playersLastSeenPostion) < 1f))
+            {
+                // Debug.Log("inside");
+                hasBeenDetectedOnce = false;
+            }
 
         }
 
 
+    }
+
+    private void AttackPlayer()
+    {
+        shootPoint.ShootBullet();
     }
 
     private void CanSeePlayer()

@@ -7,6 +7,7 @@ TagManager:
   - Barrel
   - Pistol
   - Rifle
+  - Wall
   layers:
   - Default
   - TransparentFX
