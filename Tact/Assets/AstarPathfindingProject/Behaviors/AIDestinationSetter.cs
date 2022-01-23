@@ -17,7 +17,7 @@ namespace Pathfinding {
 		/// <summary>The object that the AI should move to</summary>
 		public Transform target;
 		bool mustStop = false;
-
+		Vector3 playersLastPosition;
 		
 		IAstarAI ai;
 
@@ -37,7 +37,7 @@ namespace Pathfinding {
 		/// <summary>Updates the AI's destination every frame</summary>
 		void Update () {
 			if (target != null && ai != null && !mustStop) 
-			{ai.destination = target.position;
+			{ai.destination = playersLastPosition;
 			
 			}
 			else if(mustStop)
@@ -53,6 +53,10 @@ namespace Pathfinding {
 			mustStop = val;
 		}
 
+		public void PlayersLastSeePositiion(Vector3 lastPos)
+		{
+			playersLastPosition = lastPos;
+		}
 		
 
 	

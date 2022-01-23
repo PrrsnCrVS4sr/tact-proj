@@ -14,11 +14,14 @@ public class EnemyAIController : MonoBehaviour
     float halfFOV = 45.0f;
     float angleRotated;
     bool insideFOV;
-    
-    
+
+    bool hasBeenDetectedOnce;
+
+    Vector3 dir;
+    Vector3 playersLastSeenPostion;
     [SerializeField] float detectionRadius = 20f;
     Patrol patrolScript;
-
+    
     Rigidbody2D enemyRB;
     AIDestinationSetter destinationSetter;
     private void Awake() {
@@ -28,60 +31,110 @@ public class EnemyAIController : MonoBehaviour
         enemyRB = GetComponent<Rigidbody2D>();
         patrolScript.enabled = false;
         destinationSetter.enabled = false;
+        destinationSetter.target = playerTarget;
     }
 
-    private void Update() {
-        float distanceFromPlayer = Vector2.Distance(playerTarget.position,transform.position);
-        Vector3 dir = playerTarget.position - transform.position;
+    private void Update()
+    {
+
+        float distanceFromPlayer = Vector2.Distance(playerTarget.position, transform.position);
+        dir = (playerTarget.position - transform.position).normalized;
+
         
-        rawAngle = Mathf.Atan2(dir.y,dir.x) * Mathf.Rad2Deg ;
-        float angleAdjusted = rawAngle -90f;
+        rawAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        float angleAdjusted = rawAngle - 90f;
 
         angleRotated = transform.rotation.eulerAngles.z;
-         
-        GetReadableValuesOfRotatedAngle();
+
+
         // Debug.Log(angleRotated);
         // Debug.Log(rawAngle);
-        CheckIfInFOV();
+        CanSeePlayer();
+        destinationSetter.PlayersLastSeePositiion(playersLastSeenPostion);
+        // Debug.DrawLine(transform.position, playersLastSeenPostion, Color.red, 1);
         // Debug.Log(insideFOV);
-        if(distanceFromPlayer>detectionRadius || !insideFOV )
-        {   
-            //Debug.Log("1");
+        Debug.Log(hasBeenDetectedOnce);
+        if ((distanceFromPlayer > detectionRadius || !insideFOV) && !hasBeenDetectedOnce)
+        {
+            // Debug.Log("1");
             patrolScript.enabled = true;
             destinationSetter.enabled = false;
-            
+
         }
-        else if(distanceFromPlayer<detectionRadius && distanceFromPlayer>= attackRadius  &&insideFOV)
-        {   
-            //Debug.Log("2");
+        else if (distanceFromPlayer < detectionRadius && distanceFromPlayer >= attackRadius && (insideFOV || hasBeenDetectedOnce))
+        {
+            // Debug.Log("2");
             patrolScript.enabled = false;
             destinationSetter.enabled = true;
-            destinationSetter.target = playerTarget;
+            
             destinationSetter.Stop(false);
+            CanSeePlayer();
+            
+            if(!insideFOV && (Vector3.Magnitude(transform.position -playersLastSeenPostion)<1f))
+            {   
+                // Debug.Log("inside");
+                hasBeenDetectedOnce = false;
+            }
+
         }
-        else if(distanceFromPlayer<attackRadius &&insideFOV )
-        {   
-            //Debug.Log("3");
+        else if (distanceFromPlayer < attackRadius && (insideFOV))
+        {
+            // Debug.Log("3");
+            patrolScript.enabled = false;
             destinationSetter.enabled = true;
-            destinationSetter.target = playerTarget;
+            
             destinationSetter.Stop(true);
-            
-            
+
+
             transform.rotation = Quaternion.AngleAxis(angleAdjusted, Vector3.forward);
-            
+
         }
+        else
+        {   
+            Debug.Log("4");
+            patrolScript.enabled = false;
+            destinationSetter.enabled = true;
+            destinationSetter.Stop(false);
+            
+
+        }
+
+
+    }
+
+    private void CanSeePlayer()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dir);
         
-        
+        if (hit.collider != null)
+        {
+            
+            if (hit.transform.tag == "Player")
+            {
+                
+                playersLastSeenPostion = hit.transform.position;
+                CheckIfInFOV();
+
+
+            }
+            else
+            {
+                insideFOV = false;
+            }
+
+        }
     }
 
     void CheckIfInFOV()
     {
         
         float angleBetween ;
+        GetReadableValuesOfRotatedAngle();
         angleBetween = (rawAngle - angleRotated);
         if(-halfFOV<=angleBetween&& angleBetween<=halfFOV)
         {
             insideFOV = true;
+            hasBeenDetectedOnce = true;
         }
         else
         {
@@ -93,7 +146,9 @@ public class EnemyAIController : MonoBehaviour
     }
 
     void GetReadableValuesOfRotatedAngle()
-    {
+    {   
+
+        
         if(0<=angleRotated && angleRotated<270)
         {
             angleRotated = angleRotated + 90;
