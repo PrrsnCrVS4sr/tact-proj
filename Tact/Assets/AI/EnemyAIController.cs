@@ -12,7 +12,7 @@ public class EnemyAIController : MonoBehaviour
     [SerializeField] float attackRadius = 10f;
 
     float rawAngle;
-    float halfFOV = 45.0f;
+    [SerializeField]float halfFOV = 45.0f;
     float angleRotated;
     bool insideFOV;
     bool canSeePlayer;
@@ -28,7 +28,7 @@ public class EnemyAIController : MonoBehaviour
 
     EnemyAttack shootPoint;
     float lastFired = 0;
-    float fireRate = 3;
+    [SerializeField]float fireRate = 3;
 
     
     private void Awake()
