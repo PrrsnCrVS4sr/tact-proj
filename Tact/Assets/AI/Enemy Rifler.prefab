@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6316406906373848371}
   - component: {fileID: 8637342078833227766}
   - component: {fileID: 4092457516920517474}
+  - component: {fileID: 1155494440}
   m_Layer: 2
   m_Name: EnemyRifle
   m_TagString: Untagged
@@ -126,6 +127,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.10935989, y: 1.4612522}
   m_EdgeRadius: 0
+--- !u!114 &1155494440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2863498157333565914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4a4c27552f08da42ad3c00a248357d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalHealth: 100
+  currentHealth: 0
 --- !u!1 &3353837748934079034
 GameObject:
   m_ObjectHideFlags: 0
@@ -583,7 +598,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8752353323707872598}
-  m_LocalRotation: {x: -0, y: -0, z: 0.0002716484, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.0002704877, w: 1}
   m_LocalPosition: {x: -18.06, y: -0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -713,6 +728,7 @@ MonoBehaviour:
   attackRadius: 10
   halfFOV: 45
   detectionRadius: 20
+  health: {fileID: 0}
   fireRate: 9
 --- !u!50 &4673026087337831068
 Rigidbody2D:

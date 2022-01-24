@@ -159,6 +159,7 @@ MonoBehaviour:
   attackRadius: 10
   halfFOV: 45
   detectionRadius: 20
+  health: {fileID: 0}
   fireRate: 3
 --- !u!50 &7150864775714070255
 Rigidbody2D:
@@ -193,6 +194,7 @@ GameObject:
   - component: {fileID: 7150864775933136955}
   - component: {fileID: 7150864775933136954}
   - component: {fileID: 7150864775933136953}
+  - component: {fileID: 914963931}
   m_Layer: 2
   m_Name: EnemyPistol
   m_TagString: Untagged
@@ -307,6 +309,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.4207878, y: 0.85988975}
   m_EdgeRadius: 0
+--- !u!114 &914963931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7150864775933136959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4a4c27552f08da42ad3c00a248357d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalHealth: 100
+  currentHealth: 0
 --- !u!1 &7150864775941877340
 GameObject:
   m_ObjectHideFlags: 0

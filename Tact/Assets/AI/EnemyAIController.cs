@@ -9,28 +9,33 @@ public class EnemyAIController : MonoBehaviour
 
     [SerializeField] Transform playerTarget;
 
-    [SerializeField] float attackRadius = 10f;
+    [SerializeField] float attackRadius = 20f;
 
     float rawAngle;
-    [SerializeField]float halfFOV = 45.0f;
+    [SerializeField]float halfFOV = 60.0f;
     float angleRotated;
     bool insideFOV;
     bool canSeePlayer;
     bool hasBeenDetectedOnce;
+    bool heardGunFire;
+
+
 
     Vector3 dir;
     Vector3 playersLastSeenPostion;
-    [SerializeField] float detectionRadius = 20f;
+    Vector3 lastFirePosition;
+    [SerializeField] float detectionRadius = 25f;
     Patrol patrolScript;
 
     Rigidbody2D enemyRB;
     AIDestinationSetter destinationSetter;
 
     EnemyAttack shootPoint;
+    Shooting shooter;
     [SerializeField]Health health;
     float lastFired = 0;
     [SerializeField]float fireRate = 3;
-
+    float totalHealth;
     
     private void Awake()
     {
@@ -40,6 +45,12 @@ public class EnemyAIController : MonoBehaviour
         enemyRB = GetComponent<Rigidbody2D>();
         shootPoint = GetComponentInChildren<EnemyAttack>();
         health = GetComponentInChildren<Health>();
+        shooter= FindObjectOfType<Shooting>();
+
+
+
+
+        totalHealth = health.CurrentHealth;
 
         patrolScript.enabled = false;
         destinationSetter.enabled = false;
@@ -47,10 +58,19 @@ public class EnemyAIController : MonoBehaviour
     }
 
     private void Update()
-    {
+    {   
+        lastFirePosition = shooter.LastFiredLocation;
         if(health.CurrentHealth<=0)
         {
             Death();
+        }
+        
+        if(lastFirePosition.z >-999)
+        {   
+            Debug.Log("exe");
+            heardGunFire = true;
+            playersLastSeenPostion = lastFirePosition;
+            shooter.ResetLastGunFirePosition();
         }
         float distanceFromPlayer = Vector2.Distance(playerTarget.position, transform.position);
         dir = (playerTarget.position - transform.position).normalized;
@@ -68,15 +88,18 @@ public class EnemyAIController : MonoBehaviour
         destinationSetter.PlayersLastSeePositiion(playersLastSeenPostion);
         // Debug.DrawLine(transform.position, playersLastSeenPostion, Color.red, 1);
         // // Debug.Log(insideFOV);
-        // Debug.Log(hasBeenDetectedOnce);
-        if ((distanceFromPlayer > detectionRadius || !canSeePlayer) && !hasBeenDetectedOnce)
+        Debug.Log("lol"+hasBeenDetectedOnce);
+        Debug.Log("lol1"+canSeePlayer);
+        Debug.Log("lol2"+heardGunFire);
+        if ((distanceFromPlayer > detectionRadius || !canSeePlayer) && !hasBeenDetectedOnce &&!heardGunFire)
         {
             // Debug.Log("1");
             patrolScript.enabled = true;
             destinationSetter.enabled = false;
 
         }
-        else if (distanceFromPlayer < detectionRadius && distanceFromPlayer >= attackRadius && (canSeePlayer || hasBeenDetectedOnce))
+        
+        if ((distanceFromPlayer < detectionRadius && distanceFromPlayer >= attackRadius && (canSeePlayer || hasBeenDetectedOnce))||heardGunFire)
         {
             // Debug.Log("2");
             patrolScript.enabled = false;
@@ -88,11 +111,14 @@ public class EnemyAIController : MonoBehaviour
             if (!canSeePlayer && (Vector3.Magnitude(transform.position - playersLastSeenPostion) < 1f))
             {
                 // Debug.Log("inside");
+                Debug.Log(canSeePlayer);
                 hasBeenDetectedOnce = false;
+                heardGunFire = false;
+                lastFirePosition.z = -999;
             }
 
         }
-        else if (distanceFromPlayer < attackRadius && (canSeePlayer))
+        if (distanceFromPlayer < attackRadius && (canSeePlayer))
         {
             // Debug.Log("3");
             patrolScript.enabled = false;
@@ -112,24 +138,26 @@ public class EnemyAIController : MonoBehaviour
             
 
         }
-        else
-        {
-            Debug.Log("4");
-            patrolScript.enabled = false;
-            destinationSetter.enabled = true;
-            destinationSetter.Stop(false);
-            CanSeePlayer();
+        // else
+        // {
+        //     Debug.Log("4");
+        //     patrolScript.enabled = false;
+        //     destinationSetter.enabled = true;
+        //     destinationSetter.Stop(false);
+        //     CanSeePlayer();
 
-            if (!canSeePlayer && (Vector3.Magnitude(transform.position - playersLastSeenPostion) < 1f))
-            {
-                // Debug.Log("inside");
-                hasBeenDetectedOnce = false;
-            }
+        //     if (!canSeePlayer && (Vector3.Magnitude(transform.position - playersLastSeenPostion) < 1f))
+        //     {
+        //         // Debug.Log("inside");
+        //         hasBeenDetectedOnce = false;
+        //     }
 
-        }
+        // }
 
 
     }
+
+    
 
     private void Death()
     {

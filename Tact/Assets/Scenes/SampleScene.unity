@@ -226,6 +226,7 @@ GameObject:
   - component: {fileID: 143719476}
   - component: {fileID: 143719479}
   - component: {fileID: 143719480}
+  - component: {fileID: 143719481}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -322,6 +323,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.0104828, y: 2.5933547}
   m_EdgeRadius: 0
+--- !u!114 &143719481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143719475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4a4c27552f08da42ad3c00a248357d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  totalHealth: 100
+  currentHealth: 0
 --- !u!4 &255494110 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2795048102943224591, guid: 42cae0ea94851af4caca0485d92a40ff, type: 3}
@@ -525,7 +540,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.214605, y: -3.51, z: -10}
+  m_LocalPosition: {x: 8.249846, y: -3.51, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1190884699}
@@ -1118,11 +1133,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3054500763018719150, guid: b1140b68308b8ee4189dd531902325c0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -18.06
+      value: -18.07
       objectReference: {fileID: 0}
     - target: {fileID: 3054500763018719150, guid: b1140b68308b8ee4189dd531902325c0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.01
+      value: 14.53
       objectReference: {fileID: 0}
     - target: {fileID: 3054500763018719150, guid: b1140b68308b8ee4189dd531902325c0, type: 3}
       propertyPath: m_LocalPosition.z

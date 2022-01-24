@@ -20,7 +20,9 @@ public class Shooting : MonoBehaviour
     float startTime =0;
     bool isReloading = false;
 
+    Vector3 lastFiredLocation;
 
+    public Vector3 LastFiredLocation{get{return lastFiredLocation;}}
     ObjectPool pool;
 
 
@@ -39,6 +41,7 @@ public class Shooting : MonoBehaviour
         muzzleFlash = GetComponentInChildren<Animator>();
         pool = FindObjectOfType<ObjectPool>();
         currentAmmoCount = ammoPerMagazine;
+        lastFiredLocation = new Vector3(0,0,-999);
     }
 
     
@@ -64,6 +67,7 @@ public class Shooting : MonoBehaviour
             Reload();
             
         }
+        
         
 
     }
@@ -110,6 +114,8 @@ public class Shooting : MonoBehaviour
         rb.AddForce(barrel.up * shootForce,ForceMode2D.Impulse);
         currentAmmoCount--;
         Debug.Log(currentAmmoCount);
+
+        lastFiredLocation = gameObject.transform.position;
         
         }
         else if(tag =="Rifle" && currentAmmoCount>0)
@@ -123,6 +129,8 @@ public class Shooting : MonoBehaviour
                 rb.AddForce(barrel.up * shootForce,ForceMode2D.Impulse);
                 currentAmmoCount--;
                 Debug.Log(currentAmmoCount);
+
+                lastFiredLocation = gameObject.transform.position;
             }
 
         }
@@ -131,6 +139,11 @@ public class Shooting : MonoBehaviour
             isReloading = true;
         }
 
+    }
+
+   public  void  ResetLastGunFirePosition()
+    {
+        lastFiredLocation.z = -999;
     }
 
 }
