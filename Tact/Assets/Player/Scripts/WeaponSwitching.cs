@@ -8,6 +8,7 @@ public class WeaponSwitching : MonoBehaviour
     
 
     int selectedWeapon = 0;
+    public int SelectedWeapon{get{return selectedWeapon;}}
     int previousSelectedWeapon;
     // Update is called once per frame
     void Update()

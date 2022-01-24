@@ -45,7 +45,7 @@ public class EnemyAIController : MonoBehaviour
         enemyRB = GetComponent<Rigidbody2D>();
         shootPoint = GetComponentInChildren<EnemyAttack>();
         health = GetComponentInChildren<Health>();
-        shooter= FindObjectOfType<Shooting>();
+        
 
 
 
@@ -58,7 +58,7 @@ public class EnemyAIController : MonoBehaviour
     }
 
     private void Update()
-    {   
+    {   shooter= FindObjectOfType<Shooting>();
         lastFirePosition = shooter.LastFiredLocation;
         if(health.CurrentHealth<=0)
         {
@@ -67,7 +67,7 @@ public class EnemyAIController : MonoBehaviour
         
         if(lastFirePosition.z >-999)
         {   
-            Debug.Log("exe");
+            // Debug.Log("exe");
             heardGunFire = true;
             playersLastSeenPostion = lastFirePosition;
             shooter.ResetLastGunFirePosition();
@@ -88,9 +88,9 @@ public class EnemyAIController : MonoBehaviour
         destinationSetter.PlayersLastSeePositiion(playersLastSeenPostion);
         // Debug.DrawLine(transform.position, playersLastSeenPostion, Color.red, 1);
         // // Debug.Log(insideFOV);
-        Debug.Log("lol"+hasBeenDetectedOnce);
-        Debug.Log("lol1"+canSeePlayer);
-        Debug.Log("lol2"+heardGunFire);
+        // Debug.Log("lol"+hasBeenDetectedOnce);
+        // Debug.Log("lol1"+canSeePlayer);
+        // Debug.Log("lol2"+heardGunFire);
         if ((distanceFromPlayer > detectionRadius || !canSeePlayer) && !hasBeenDetectedOnce &&!heardGunFire)
         {
             // Debug.Log("1");
