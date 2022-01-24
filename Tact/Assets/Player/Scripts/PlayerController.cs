@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,13 +17,18 @@ public class PlayerController : MonoBehaviour
     Vector2 lookDirection;
     float theta;
     
+    Health playerHealth;
 
     private void Start() {
         playerRB = GetComponent<Rigidbody2D>();
-
+        playerHealth = GetComponent<Health>();
     }
     void Update()
-    {   
+    {  
+        if(playerHealth.CurrentHealth <=0)
+        {
+            Death();
+        }
         relMovement.x = Input.GetAxisRaw("Horizontal");
         relMovement.y = Input.GetAxisRaw("Vertical");
 
@@ -40,6 +46,11 @@ public class PlayerController : MonoBehaviour
         
         
 
+    }
+
+    private void Death()
+    {
+        gameObject.SetActive(false);
     }
 
     private void FixedUpdate() {

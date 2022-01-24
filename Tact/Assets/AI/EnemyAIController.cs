@@ -27,6 +27,7 @@ public class EnemyAIController : MonoBehaviour
     AIDestinationSetter destinationSetter;
 
     EnemyAttack shootPoint;
+    [SerializeField]Health health;
     float lastFired = 0;
     [SerializeField]float fireRate = 3;
 
@@ -38,7 +39,7 @@ public class EnemyAIController : MonoBehaviour
         destinationSetter = GetComponent<AIDestinationSetter>();
         enemyRB = GetComponent<Rigidbody2D>();
         shootPoint = GetComponentInChildren<EnemyAttack>();
-
+        health = GetComponentInChildren<Health>();
 
         patrolScript.enabled = false;
         destinationSetter.enabled = false;
@@ -47,7 +48,10 @@ public class EnemyAIController : MonoBehaviour
 
     private void Update()
     {
-
+        if(health.CurrentHealth<=0)
+        {
+            Death();
+        }
         float distanceFromPlayer = Vector2.Distance(playerTarget.position, transform.position);
         dir = (playerTarget.position - transform.position).normalized;
 
@@ -125,6 +129,11 @@ public class EnemyAIController : MonoBehaviour
         }
 
 
+    }
+
+    private void Death()
+    {
+        gameObject.SetActive(false);
     }
 
     private void AttackPlayer()

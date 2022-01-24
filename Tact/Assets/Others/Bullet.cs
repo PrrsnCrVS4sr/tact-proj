@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    float autoDestroyTime = 2f;
-
-
+    float autoDestroyTime = 3f;
+    float damagePerBullet = 10;
+    public float DamagePerBullet{get{return damagePerBullet;}}
 
     private void OnEnable() {
         Invoke("DestroyObject",autoDestroyTime);
     }
     private void OnCollisionEnter2D(Collision2D other) {
-            Invoke("DestroyObject",1f);
+            Invoke("DestroyObject",0.25f);
     }
 
 
